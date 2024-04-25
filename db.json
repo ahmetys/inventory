@@ -1,0 +1,71 @@
+{
+  "addNewCategory": { "res": true },
+  "addNewProduct": { "res": true },
+  "getCategories": [
+    [0, 1, "Apple"],
+    [0, 2, "Samsung"],
+    [0, 3, "Huawei"],
+    [1, 4, "iPhone 15 Pro Max"],
+    [1, 5, "iPhone 15 Pro"],
+    [1, 6, "iPhone 15 Plus"],
+    [1, 7, "iPhone 15"],
+    [4, 8, "Hülle"],
+    [4, 9, "Panzerglas"],
+    [5, 10, "Hülle"],
+    [5, 11, "Panzerglas"],
+    [6, 12, "Hülle"]
+  ],
+  "getProducts": [
+    {
+      "catid": 8,
+      "productId": 1,
+      "image": "https://picsum.photos/80/125",
+      "brand": "Test Brand 1",
+      "name": "Test Product 1",
+      "pprice": 1,
+      "wprice": 3,
+      "rprice": 10
+    },
+    {
+      "catid": 8,
+      "productId": 2,
+      "image": "https://picsum.photos/80/125",
+      "brand": "Test Brand 2",
+      "name": "Test Product 2",
+      "pprice": 2.5,
+      "wprice": 5.5,
+      "rprice": 20
+    },
+    {
+      "catid": 9,
+      "productId": 3,
+      "image": "https://picsum.photos/80/125",
+      "brand": "Test Brand 3",
+      "name": "Test Product 3",
+      "pprice": 10,
+      "wprice": 15,
+      "rprice": 30
+    },
+    {
+      "catid": 9,
+      "productId": 4,
+      "image": "https://picsum.photos/80/125",
+      "brand": "Test Brand 4",
+      "name": "Test Product 4",
+      "pprice": 4,
+      "wprice": 7,
+      "rprice": 20
+    },
+    {
+      "catid": 9,
+      "productId": 5,
+      "image": "https://picsum.photos/80/125",
+      "brand": "Test Brand 5",
+      "name": "Test Product 5",
+      "pprice": 7,
+      "wprice": 12,
+      "rprice": 35
+    }
+  ],
+  "addToCart": { "res": true }
+}
