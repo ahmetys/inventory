@@ -196,7 +196,7 @@ class Storage {
   }
 
   async getOrders(userId) {
-    const response = (
+    return (
       await fetch(`${this.url}getOrders`, {
         method: "POST",
         headers: {
@@ -205,7 +205,18 @@ class Storage {
         body: JSON.stringify({ userId }),
       })
     ).json();
-    return response;
+  }
+
+  async getOrderDetails(orderId) {
+    return (
+      await fetch(`${this.url}getOrderDetails`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      })
+    ).json();
   }
 
   categoryTree(categoryId, categoryName = "ANASAYFA") {

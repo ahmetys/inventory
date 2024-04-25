@@ -203,6 +203,10 @@ document.addEventListener("click", (e) => {
     case "delete-row-from-table":
       e.target.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
       break;
+    case "load-order-details":
+      const orderId = e.target.getAttribute("data-id");
+      ui.loadOrderDetails(orderId);
+      break;
     default:
       break;
   }

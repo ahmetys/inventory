@@ -252,17 +252,28 @@ app.post("/confirmOrder", (req, res) => {
 });
 
 app.post("/getOrders", (req, res) => {
+  console.log(req.body);
   con.query(`SELECT * FROM users WHERE user_id='${req.body.userId}'`, function (err, result) {
     if (result[0].user_role == "admin") {
-      con.query(`SELECT orders.*,users.* FROM orders,users WHERE orders.order_user_id=users.user_id`, function (err, result1) {
+      con.query(`SELECT orders.*,users.user_name FROM orders,users WHERE user_id=order_user_id`, function (err, result1) {
         console.log(result1);
         res.send(result1);
       });
     } else {
-      con.query(`SELECT orders.*,users.* FROM orders,users WHERE orders.order_user_id='${req.body.userId}' AND users.user_id='${req.body.userId}'`, function (err, result2) {
+      con.query(`SELECT orders.*,users.user_name FROM orders,users WHERE order_user_id='${req.body.userId}' AND user_id=order_user_id`, function (err, result2) {
         res.send(result2);
       });
     }
+  });
+});
+
+app.post("/getOrderDetails", (req, res) => {
+  console.log(req.body);
+  const sql = `SELECT order_details.*,products.* FROM order_details,products WHERE order_details.order_id='${req.body.orderId}' AND order_details.ordered_product_id=products.product_id`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
   });
 });
 

@@ -196,7 +196,6 @@ class UI {
   loadTabOrders() {
     this.cleaner(this.tabOrders);
     storage.getOrders(storage.getUserInfo().user_id).then((res) => {
-      localStorage.setItem("orders", JSON.stringify(res));
       const accordionDiv = document.createElement("div");
       accordionDiv.id = "orders-accordion";
       accordionDiv.classList = "accordion";
@@ -207,10 +206,21 @@ class UI {
         <h2 class="accordion-header">
           <button class="accordion-button collapsed bg-opacity-25 ${order.order_status == "ordered" ? "bg-warning" : "bg-success"}" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-${order.order_id}" aria-expanded="true" aria-controls="collapse-${order.order_id}" data-id="${
           order.order_id
-        }" data-role="load-products-to-accordion">
-            <span><strong>Siparis No #</strong>${order.order_id}</span>&nbsp&nbsp&nbsp&nbsp&nbsp
-            <span><strong>Kullanici:</strong>${order.user_name}</span>&nbsp&nbsp&nbsp&nbsp&nbsp
-            <span><strong>Siparis Tarihi:</strong>${ui.formatDate(order.order_date)}</span>
+        }" data-role="load-order-details">
+            <div class="row m-0 w-100">
+              <div class ="col-4">
+                <div><strong>Siparis No</strong></div>
+                <div>#${order.order_id}</div>
+              </div>
+              <div class ="col-4">
+                <div><strong>Kullanici</strong></div>
+                <div>${order.user_name}</div>
+              </div>
+              <div class ="col-4">
+                <div><strong>Siparis Tarihi</strong></div>
+                <div>${ui.formatDate(order.order_date)}</div>
+              </div>
+            </div>
           </button>
         </h2>
         <div id="collapse-${order.order_id}" class="accordion-collapse collapse" data-bs-parent="#orders-accordion">
@@ -220,8 +230,7 @@ class UI {
                 <div class="dropdown">
                   <i class="fa-solid fa-3x fa-file-lines text-info bg-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                   <div class="dropdown-menu p-2 bg-info-subtle" style="width:75vw !important;">
-                    <p class="m-0">${order.order_note} 
-                    lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 lorem100 
+                    <p class="m-0">${order.order_notes} 
                     </p>
                   </div>
                 </div>                
@@ -251,50 +260,51 @@ class UI {
           </div>
         </div>
         `;
-        const arr = JSON.parse(order.order_products);
-        let orderTotal = 0;
-        arr.forEach((p) => {
-          const tr = document.createElement("tr");
-          tr.setAttribute("data-product-id", p.product_id);
-          tr.innerHTML = `
-          <td class="py-0">
-            <img onclick="img_box(this)" src="uploads/${p.product_image}" width="40" height="65"/>
-          </td>
-          <td>
-            <div class="row mx-0">
-              <div class="col-12 px-0 d-flex">
-                <div class="col-3 px-0">
-                  <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_brand}" disabled>
-                </div>
-                <div class="col-9 px-0">
-                  <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_name}" disabled>
-                </div>
-              </div>
-              <div class="col-12 px-0 d-flex">
-                <div>
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${p.product_quantity}">
-                </div>
-                x
-                <div>
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${p.product_wprice}">€
-                  <span> = ${p.product_wprice * p.product_quantity} €</span>
-                <div>                  
-              </div>
-            </div>
-          </td>
-          `;
-          accordion.querySelector("#order-tbody-" + order.order_id).appendChild(tr);
-          orderTotal += p.product_wprice * p.product_quantity;
-          accordion.querySelector("#order-total-" + order.order_id).textContent = orderTotal + "€";
-        });
-        const lastRow = document.createElement("tr");
-        lastRow.innerHTML = `
-        <td>
-          <i class="fa-solid fa-2x fa-circle-plus text-success" type="button" data-role="add-row-to-table"></i>
-        </td>
-        <td>
-        </td>`;
-        accordion.querySelector("#order-tbody-" + order.order_id).appendChild(lastRow);
+        // const arr = JSON.parse(order.order_products);
+        // let orderTotal = 0;
+        // arr.forEach((p) => {
+        //   const tr = document.createElement("tr");
+        //   tr.setAttribute("data-product-id", p.product_id);
+        //   tr.innerHTML = `
+        //   <td class="py-0">
+        //     <img onclick="img_box(this)" src="uploads/${p.product_image}" width="40" height="65"/>
+        //   </td>
+        //   <td>
+        //     <div class="row mx-0">
+        //       <div class="col-12 px-0 d-flex">
+        //         <div class="col-3 px-0">
+        //           <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_brand}" disabled>
+        //         </div>
+        //         <div class="col-9 px-0">
+        //           <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_name}" disabled>
+        //         </div>
+        //       </div>
+        //       <div class="col-12 px-0 d-flex">
+        //         <div>
+        //           <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${p.product_quantity}">
+        //         </div>
+        //         x
+        //         <div>
+        //           <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${p.product_wprice}">€
+        //           <span> = ${p.product_wprice * p.product_quantity} €</span>
+        //         <div>
+        //       </div>
+        //     </div>
+        //   </td>
+        //   `;
+        //   accordion.querySelector("#order-tbody-" + order.order_id).appendChild(tr);
+        //   orderTotal += p.product_wprice * p.product_quantity;
+        //   accordion.querySelector("#order-total-" + order.order_id).textContent = orderTotal + "€";
+        // });
+
+        // const lastRow = document.createElement("tr");
+        // lastRow.innerHTML = `
+        // <td>
+        //   <i class="fa-solid fa-2x fa-circle-plus text-success" type="button" data-role="add-row-to-table"></i>
+        // </td>
+        // <td>
+        // </td>`;
+        // accordion.querySelector("#order-tbody-" + order.order_id).appendChild(lastRow);
         accordionDiv.appendChild(accordion);
       });
 
@@ -302,10 +312,59 @@ class UI {
     });
   }
 
+  loadOrderDetails(orderId) {
+    storage.getOrderDetails(orderId).then((resOrderDetails) => {
+      console.log(resOrderDetails);
+      const orderTbody = document.querySelector("#order-tbody-" + orderId);
+      this.cleaner(orderTbody);
+      for (let order of resOrderDetails) {
+        const tr = document.createElement("tr");
+        tr.setAttribute("data-product-id", order.product_id);
+        tr.innerHTML = `
+          <td class="py-0">
+            <img onclick="img_box(this)" src="uploads/${order.product_image}" width="40" height="65"/>
+          </td>
+          <td>
+            <div class="row mx-0">
+              <div class="col-12 px-0 d-flex">
+                <div class="col-3 px-0">
+                  <input type="text" class="form-control border-0  m-0 p-0" value="${order.product_brand}" disabled>
+                </div>
+                <div class="col-9 px-0">
+                  <input type="text" class="form-control border-0  m-0 p-0" value="${order.product_name}" disabled>
+                </div>
+              </div>
+              <div class="col-12 px-0 d-flex">
+                <div>
+                  <input data-order-id="${order.order_id}" onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${order.ordered_product_quantity}">
+                </div>
+                x
+                <div>
+                  <input data-order-id="${order.order_id}" onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${order.ordered_product_wprice}">€
+                  = <span data-role="ordered-product-total"> ${order.ordered_product_wprice * order.ordered_product_quantity} </span>€
+                <div>
+              </div>
+            </div>
+          </td>
+          `;
+        orderTbody.appendChild(tr);
+      }
+    });
+  }
+
   calculateSummary(e) {
     let val1 = e.parentElement.parentElement.getElementsByTagName("input")[0].value;
     let val2 = e.parentElement.parentElement.getElementsByTagName("input")[1].value;
-    e.parentElement.parentElement.getElementsByTagName("span")[0].textContent = "=" + Number(val1 * val2) + " €";
+    e.parentElement.parentElement.getElementsByTagName("span")[0].textContent = Number(val1 * val2);
+
+    const orderTbody = e.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+    let orderTotal = 0;
+    Array.from(orderTbody.querySelectorAll('span[data-role="ordered-product-total"]')).forEach((e) => {
+      console.log(e.textContent);
+      orderTotal += Number(e.textContent);
+    });
+    console.log("order-total-" + e.getAttribute("data-order-id"));
+    document.querySelector("#order-total-" + e.getAttribute("data-order-id")).textContent = orderTotal;
   }
 
   updatePill() {
