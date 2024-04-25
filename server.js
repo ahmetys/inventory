@@ -255,6 +255,7 @@ app.post("/getOrders", (req, res) => {
   con.query(`SELECT * FROM users WHERE user_id='${req.body.userId}'`, function (err, result) {
     if (result[0].user_role == "admin") {
       con.query(`SELECT orders.*,users.* FROM orders,users WHERE orders.order_user_id=users.user_id`, function (err, result1) {
+        console.log(result1);
         res.send(result1);
       });
     } else {
