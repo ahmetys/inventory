@@ -219,6 +219,41 @@ class Storage {
     ).json();
   }
 
+  async addManualProductToOrder(orderId) {
+    return (
+      await fetch(`${this.url}addManualProductToOrder`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      })
+    ).json();
+  }
+
+  async deleteManualProductFromOrder(orderId, productId) {
+    return (
+      await fetch(`${this.url}deleteManualProductFromOrder`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ orderId, productId }),
+      })
+    ).json();
+  }
+
+  async getOrderSummary(orderId) {
+    return (
+      await fetch(`${this.url}getOrderSummary`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      })
+    ).json();
+  }
   categoryTree(categoryId, categoryName = "ANASAYFA") {
     let categoryTree;
     if (localStorage.getItem("category-tree") === null) {
@@ -263,47 +298,5 @@ class Storage {
       method: "POST",
       body: updateProductFormData,
     }).then((res) => res.json());
-  }
-
-  setOrderOnLocal(e) {
-    const orderTbody = e.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-    const orderId = orderTbody.getAttribute("data-order-id");
-    const tableRows = Array.from(orderTbody.getElementsByTagName("tr"));
-    let ordersOnLocal = JSON.parse(localStorage.getItem("orders"));
-    let currentOrder = ordersOnLocal.filter((e) => e.order_id == orderId);
-    const currentOrderProducts = JSON.parse(currentOrder[0].order_products);
-    tableRows.forEach((item, index) => {
-      if (index < tableRows.length - 1) {
-        const productBrand = item.getElementsByTagName("input")[0].value;
-        const productName = item.getElementsByTagName("input")[1].value;
-        const productQuantity = Number(item.getElementsByTagName("input")[2].value);
-        const productWprice = Number(item.getElementsByTagName("input")[3].value);
-
-        if (item.hasAttribute("data-product-id")) {
-          currentOrderProducts[index].d_product_brand = productBrand;
-          currentOrderProducts[index].d_product_name = productName;
-          currentOrderProducts[index].d_product_quantity = productQuantity;
-          currentOrderProducts[index].d_product_wprice = productWprice;
-        } else {
-          currentOrderProducts.push({
-            product_brand: productBrand,
-            product_name: productName,
-            product_quantity: productQuantity,
-            product_wprice: productWprice,
-            d_product_brand: productBrand,
-            d_product_name: productName,
-            d_product_quantity: productQuantity,
-            d_product_wprice: productWprice,
-          });
-        }
-      }
-    });
-    ordersOnLocal.map((e) => {
-      if (e.order_id == orderId) {
-        e.order_products = JSON.stringify(currentOrderProducts);
-      }
-    });
-    localStorage.setItem("orders", JSON.stringify(ordersOnLocal));
-    console.log(currentOrderProducts);
   }
 }

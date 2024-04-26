@@ -169,39 +169,48 @@ document.addEventListener("click", (e) => {
 
       break;
     case "add-row-to-table":
-      const tableRow = document.createElement("tr");
-      tableRow.innerHTML = `
+      storage.addManualProductToOrder(e.target.getAttribute("data-order-id")).then((resManualOrder) => {
+        console.log(resManualOrder.product_image);
+        const tableRow = document.createElement("tr");
+        tableRow.setAttribute("data-product-id", resManualOrder.productId);
+        tableRow.innerHTML = `
           <td class="py-0">
-            <img onclick="img_box(this)" src="uploads/no-picture.jpg" width="40" height="65">
+            <img onclick="img_box(this)" src="uploads/${resManualOrder.product_image}" width="40" height="65">
           </td>
           <td>
             <div class="row mx-0">
               <div class="col-12 px-0 d-flex">
                 <div class="col-3 px-0">
-                  <input onfocus="this.select();" onfocusout="storage.setOrderOnLocal(this)" onmouseup="return false;" autocapitalize="characters" placeholder="Marka girin" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
+                  <input onfocus="this.select();" onfocusout="" onmouseup="return false;" autocapitalize="characters" placeholder="Marka girin" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
                 </div>                
                 <div class="col-9 px-0">
-                  <input onfocus="this.select();" onfocusout="storage.setOrderOnLocal(this)" onmouseup="return false;" autocapitalize="characters" placeholder="Ürün adini girin" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
+                  <input onfocus="this.select();" onfocusout="" onmouseup="return false;" autocapitalize="characters" value="${resManualOrder.product_name}" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
                 </div>                
               </div>
               <div class="col-12 px-0 d-flex">
                 <div class="col-10">
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="1">
+                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${resManualOrder.product_quantity}">
                     x
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="0">€
+                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${resManualOrder.product_wprice}">€
                   <span>=0 €</span>
                 </div>                
                 <div class="col-2 px-0">
-                  <i class="fa-solid fa-2x fa-circle-minus text-danger" onclick="storage.setOrderOnLocal()" type="button" data-role="delete-row-from-table"></i>
+                  <i data-order-id="${resManualOrder.order_id}" data-product-id="${resManualOrder.product_id}" class="fa-solid fa-2x fa-circle-minus text-danger" onclick="" type="button" data-role="delete-row-from-table"></i>
                 </div>
               </div>
             </div>
           </td>
       `;
-      e.target.parentElement.parentElement.insertAdjacentHTML("beforebegin", tableRow.outerHTML);
+        e.target.parentElement.parentElement.insertAdjacentHTML("beforebegin", tableRow.outerHTML);
+      });
+
       break;
     case "delete-row-from-table":
-      e.target.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+      storage.deleteManualProductFromOrder(e.target.getAttribute("data-order-id"), e.target.getAttribute("data-product-id")).then((res) => {
+        ui.showAlert(res.type, res.message);
+        e.target.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+      });
+
       break;
     case "load-order-details":
       const orderId = e.target.getAttribute("data-id");

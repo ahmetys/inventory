@@ -268,12 +268,45 @@ app.post("/getOrders", (req, res) => {
 });
 
 app.post("/getOrderDetails", (req, res) => {
-  console.log(req.body);
   const sql = `SELECT order_details.*,products.* FROM order_details,products WHERE order_details.order_id='${req.body.orderId}' AND order_details.ordered_product_id=products.product_id`;
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
     res.send(result);
+  });
+});
+
+app.post("/getOrderSummary", (req, res) => {
+  const sql = `SELECT SUM(ordered_product_quantity),SUM(ordered_product_wprice) FROM order_details WHERE order_id='${req.body.orderId}'`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.post("/addManualProductToOrder", (req, res) => {
+  const sql = `INSERT INTO products (product_category_id,product_image, product_name,product_brand,product_pprice,product_wprice,product_rprice) VALUES ('','no-picture.jpg','Yeni ürün','','0','0','0')`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    const productId = result.insertId;
+    const sql = `INSERT INTO order_details (order_id,ordered_product_id,ordered_product_name,ordered_product_quantity,ordered_product_wprice) VALUES ('${req.body.orderId}','${productId}','Yeni ürün','1','0')`;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send({ order_id: req.body.orderId, product_image: "no-picture.jpg", product_id: productId, product_name: "Yeni ürün", product_quantity: "1", product_wprice: "0" });
+    });
+  });
+});
+
+app.post("/deleteManualProductFromOrder", (req, res) => {
+  const sql = `DELETE FROM order_details WHERE ordered_product_id='${req.body.productId}' AND order_id='${req.body.orderId}'`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    const sql = `DELETE FROM products WHERE product_id='${req.body.productId}'`;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      res.send({ type: "success", message: "Ürün silindi" });
+    });
   });
 });
 

@@ -1,27 +1,8 @@
-; ürün silme
-; confirm ile onay aldiktan sonra db den ve arayüzden silinecek
-
-; ürün güncelleme
-; modal eklenecek
-; db den cekilen ürün bilgileri forma aktarilacak
-; formun üstünde mevcut image gösterilecek
-; image dahil bütün inputlarda mevcut bilgiler gösterilecek
-
-; sepet
-; sepetteki ürünlerin tamami silinince siparis notu arayüzden kaldirilicak 
-; siparisi onaylaya tikladiktan önce sepet kontrolü yapilacak
-
 orders
-siparisler arayüze yüklenirken ayni zamanda id sine göre localstorage a da eklenecek. arayüze güncelleme yapildiginda veya ekstra ekleme yapildiginda burasi güncellenecek 
-siparis onaylanirken db ye localstorage taki hali gönderilecek
-sipariste arayüzde degisiklik yapildiginda calistirilacak fonksiyon hesaplamalari yapacak toplamini yazacak (setOrderOnLocal)
 ayar simgesine tiklayinca siparisi onayla ve sil secenegi eklenecek
-siparis onaylandiginda localstorage taki hali dbye kaydedilecek
-; siparisteki her bir ürünün adeti ve fiyati güncellenebilecek
+siparisteki her bir ürünün adeti ve fiyati güncellenebilecek
 
-; checkboxu sil
-; adet ve birim fiyati inputa al ürün yoksa sifir girilecek
-siparis onaylaninca order_productsta her bir ürüne duplicate eklenip siparisin son hali yer alacak ve siparis tamamlandiktan sonra cliente bu gösterilecek('key' on object)
+ adet ve birim fiyati inputa al ürün yoksa sifir girilecek
 siparis sayfasina limit eklenecek
 siparis sayfasina tarih durum kullanici filtreleri eklenecek(tab simgesini dropup yapip bekleyen , tamamlanan siparisler ve siparis filtreleme secenekleri eklenebilir???)
 filtre divi iki date input bir kullanici select ve filtrele butonundan olusacak
@@ -30,4 +11,3 @@ PAGINATION?????????????????
 siparisi yazdirma formatina cevrilebilir???? 
 
 
-ORDERS TABLOSU ORDER_PRODUCTS YAPISI ALTERNATIF DÜSÜN*****************

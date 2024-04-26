@@ -314,10 +314,21 @@ class UI {
 
   loadOrderDetails(orderId) {
     storage.getOrderDetails(orderId).then((resOrderDetails) => {
+      storage.getOrderSummary(orderId).then((res) => {
+        console.log(Object.values(res[0]));
+        const sum = Object.values(res[0]);
+        document.querySelector("#order-total-" + orderId).textContent = Number(sum[0] * sum[1]) + " €";
+      });
       console.log(resOrderDetails);
       const orderTbody = document.querySelector("#order-tbody-" + orderId);
       this.cleaner(orderTbody);
       for (let order of resOrderDetails) {
+        const deleteIcon = `
+        <div>
+          <i data-order-id="${order.order_id}" data-product-id="${order.product_id}" class="fa-solid fa-2x fa-circle-minus text-danger" onclick="" type="button" data-role="delete-row-from-table"></i>
+        </div>
+        
+        `;
         const tr = document.createElement("tr");
         tr.setAttribute("data-product-id", order.product_id);
         tr.innerHTML = `
@@ -342,13 +353,23 @@ class UI {
                 <div>
                   <input data-order-id="${order.order_id}" onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${order.ordered_product_wprice}">€
                   = <span data-role="ordered-product-total"> ${order.ordered_product_wprice * order.ordered_product_quantity} </span>€
-                <div>
+                </div>
+                ${order.product_category_id == 0 ? deleteIcon : ""}
               </div>
             </div>
           </td>
           `;
         orderTbody.appendChild(tr);
       }
+
+      const lastRow = document.createElement("tr");
+      lastRow.innerHTML = `
+        <td>
+          <i class="fa-solid fa-2x fa-circle-plus text-success" type="button" data-order-id="${orderId}" data-role="add-row-to-table"></i>
+        </td>
+        <td>
+        </td>`;
+      orderTbody.appendChild(lastRow);
     });
   }
 
