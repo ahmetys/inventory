@@ -254,6 +254,30 @@ class Storage {
       })
     ).json();
   }
+
+  async updateOrderRow(productInfos) {
+    return (
+      await fetch(`${this.url}updateOrderRow`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(productInfos),
+      })
+    ).json();
+  }
+
+  async completeOrder(orderId) {
+    return (
+      await fetch(`${this.url}completeOrder`, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({ orderId }),
+      })
+    ).json();
+  }
   categoryTree(categoryId, categoryName = "ANASAYFA") {
     let categoryTree;
     if (localStorage.getItem("category-tree") === null) {

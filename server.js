@@ -277,11 +277,29 @@ app.post("/getOrderDetails", (req, res) => {
 });
 
 app.post("/getOrderSummary", (req, res) => {
-  const sql = `SELECT SUM(ordered_product_quantity),SUM(ordered_product_wprice) FROM order_details WHERE order_id='${req.body.orderId}'`;
+  const sql = `SELECT SUM(ordered_product_quantity*ordered_product_wprice) as total FROM order_details WHERE order_id='${req.body.orderId}'`;
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
     res.send(result);
+  });
+});
+
+app.post("/updateOrderRow", (req, res) => {
+  const sql = `UPDATE order_details SET ordered_product_name='${req.body.productName}', ordered_product_quantity='${req.body.productQuantity}', ordered_product_wprice='${req.body.productWprice}' WHERE order_id='${req.body.orderId}' AND ordered_product_id='${req.body.productId}'`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    console.log(result);
+    res.send(result);
+  });
+});
+
+app.post("/completeOrder", (req, res) => {
+  console.log(req.body.orderId);
+  const sql = `UPDATE orders SET order_status='completed' WHERE order_id='${req.body.orderId}'`;
+  con.query(sql, function (err, result) {
+    if (err) throw err;
+    res.send({ type: "success", message: "Siparis tamamlandi" });
   });
 });
 

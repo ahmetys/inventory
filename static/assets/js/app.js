@@ -184,14 +184,14 @@ document.addEventListener("click", (e) => {
                   <input onfocus="this.select();" onfocusout="" onmouseup="return false;" autocapitalize="characters" placeholder="Marka girin" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
                 </div>                
                 <div class="col-9 px-0">
-                  <input onfocus="this.select();" onfocusout="" onmouseup="return false;" autocapitalize="characters" value="${resManualOrder.product_name}" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
+                  <input  data-order-id="${resManualOrder.order_id}" data-product-id="${resManualOrder.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" autocapitalize="characters" value="${resManualOrder.product_name}" type="text" class="form-control border-0 d-inline-block m-0 p-0 text-start">
                 </div>                
               </div>
               <div class="col-12 px-0 d-flex">
                 <div class="col-10">
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${resManualOrder.product_quantity}">
+                  <input data-order-id="${resManualOrder.order_id}" data-product-id="${resManualOrder.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${resManualOrder.product_quantity}">
                     x
-                  <input onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${resManualOrder.product_wprice}">€
+                  <input  data-order-id="${resManualOrder.order_id}" data-product-id="${resManualOrder.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${resManualOrder.product_wprice}">€
                   <span>=0 €</span>
                 </div>                
                 <div class="col-2 px-0">
@@ -209,12 +209,24 @@ document.addEventListener("click", (e) => {
       storage.deleteManualProductFromOrder(e.target.getAttribute("data-order-id"), e.target.getAttribute("data-product-id")).then((res) => {
         ui.showAlert(res.type, res.message);
         e.target.parentElement.parentElement.parentElement.parentElement.parentElement.remove();
+        storage.getOrderSummary(e.target.getAttribute("data-order-id")).then((res) => {
+          console.log(res);
+          document.querySelector("#order-total-" + e.target.getAttribute("data-order-id")).textContent = Number(res[0].total) + " €";
+        });
       });
 
       break;
     case "load-order-details":
       const orderId = e.target.getAttribute("data-id");
       ui.loadOrderDetails(orderId);
+      break;
+
+    case "complete-order":
+      console.log("complete order");
+      storage.completeOrder(e.target.getAttribute("data-order-id")).then((res) => {
+        ui.showAlert(res.type, res.message);
+        ui.loadTabOrders();
+      });
       break;
     default:
       break;

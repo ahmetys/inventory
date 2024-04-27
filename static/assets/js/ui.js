@@ -200,6 +200,10 @@ class UI {
       accordionDiv.id = "orders-accordion";
       accordionDiv.classList = "accordion";
       res.forEach((order) => {
+        const completeOrderButton = `        
+        <li>
+          <a type="button" class="dropdown-item" href="#" data-role="complete-order" data-order-id="${order.order_id}">Siparisi tamamla</a>
+        </li>`;
         const accordion = document.createElement("div");
         accordion.classList = "accordion-item";
         accordion.innerHTML = `
@@ -239,12 +243,7 @@ class UI {
                 <div class="dropdown">
                   <i class="fa-solid fa-3x fa-gear text-secondary bg-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                   <ul class="dropdown-menu">
-                    <li>
-                      <a type="button" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add-category-modal">Kategori Ekle</a>
-                    </li>
-                    <li>
-                      <a type="button" class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#add-product-modal">Ürün Ekle</a>
-                    </li>
+                      ${order.order_status == "ordered" ? completeOrderButton : ""}
                   </ul>
                 </div>
               </div>
@@ -260,51 +259,6 @@ class UI {
           </div>
         </div>
         `;
-        // const arr = JSON.parse(order.order_products);
-        // let orderTotal = 0;
-        // arr.forEach((p) => {
-        //   const tr = document.createElement("tr");
-        //   tr.setAttribute("data-product-id", p.product_id);
-        //   tr.innerHTML = `
-        //   <td class="py-0">
-        //     <img onclick="img_box(this)" src="uploads/${p.product_image}" width="40" height="65"/>
-        //   </td>
-        //   <td>
-        //     <div class="row mx-0">
-        //       <div class="col-12 px-0 d-flex">
-        //         <div class="col-3 px-0">
-        //           <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_brand}" disabled>
-        //         </div>
-        //         <div class="col-9 px-0">
-        //           <input type="text" class="form-control border-0  m-0 p-0" value="${p.product_name}" disabled>
-        //         </div>
-        //       </div>
-        //       <div class="col-12 px-0 d-flex">
-        //         <div>
-        //           <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${p.product_quantity}">
-        //         </div>
-        //         x
-        //         <div>
-        //           <input onfocus="this.select();" onfocusout="ui.calculateSummary(this); storage.setOrderOnLocal(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${p.product_wprice}">€
-        //           <span> = ${p.product_wprice * p.product_quantity} €</span>
-        //         <div>
-        //       </div>
-        //     </div>
-        //   </td>
-        //   `;
-        //   accordion.querySelector("#order-tbody-" + order.order_id).appendChild(tr);
-        //   orderTotal += p.product_wprice * p.product_quantity;
-        //   accordion.querySelector("#order-total-" + order.order_id).textContent = orderTotal + "€";
-        // });
-
-        // const lastRow = document.createElement("tr");
-        // lastRow.innerHTML = `
-        // <td>
-        //   <i class="fa-solid fa-2x fa-circle-plus text-success" type="button" data-role="add-row-to-table"></i>
-        // </td>
-        // <td>
-        // </td>`;
-        // accordion.querySelector("#order-tbody-" + order.order_id).appendChild(lastRow);
         accordionDiv.appendChild(accordion);
       });
 
@@ -315,9 +269,8 @@ class UI {
   loadOrderDetails(orderId) {
     storage.getOrderDetails(orderId).then((resOrderDetails) => {
       storage.getOrderSummary(orderId).then((res) => {
-        console.log(Object.values(res[0]));
-        const sum = Object.values(res[0]);
-        document.querySelector("#order-total-" + orderId).textContent = Number(sum[0] * sum[1]) + " €";
+        console.log(res);
+        document.querySelector("#order-total-" + orderId).textContent = Number(res[0].total) + " €";
       });
       console.log(resOrderDetails);
       const orderTbody = document.querySelector("#order-tbody-" + orderId);
@@ -347,11 +300,15 @@ class UI {
               </div>
               <div class="col-12 px-0 d-flex">
                 <div>
-                  <input data-order-id="${order.order_id}" onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${order.ordered_product_quantity}">
+                  <input data-order-id="${order.order_id}" data-product-id="${order.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${
+          order.ordered_product_quantity
+        }">
                 </div>
                 x
                 <div>
-                  <input data-order-id="${order.order_id}" onfocus="this.select();" onfocusout="ui.calculateSummary(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${order.ordered_product_wprice}">€
+                  <input data-order-id="${order.order_id}" data-product-id="${order.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${
+          order.ordered_product_wprice
+        }">€
                   = <span data-role="ordered-product-total"> ${order.ordered_product_wprice * order.ordered_product_quantity} </span>€
                 </div>
                 ${order.product_category_id == 0 ? deleteIcon : ""}
@@ -373,19 +330,38 @@ class UI {
     });
   }
 
+  updateOrderRow(e) {
+    const orderId = e.getAttribute("data-order-id");
+    const productId = e.getAttribute("data-product-id");
+    const productName = e.parentElement.parentElement.parentElement.getElementsByTagName("input")[1].value;
+    const productQuantity = e.parentElement.parentElement.parentElement.getElementsByTagName("input")[2].value;
+    const productWprice = e.parentElement.parentElement.parentElement.getElementsByTagName("input")[3].value;
+    console.log(orderId, productId, productName, productQuantity, productWprice);
+    storage.updateOrderRow({ orderId, productId, productName, productQuantity, productWprice }).then((res) => {
+      console.log(res);
+      storage.getOrderSummary(orderId).then((res) => {
+        console.log(res);
+        document.querySelector("#order-total-" + orderId).textContent = Number(res[0].total) + " €";
+        let val1 = e.parentElement.parentElement.getElementsByTagName("input")[0].value;
+        let val2 = e.parentElement.parentElement.getElementsByTagName("input")[1].value;
+        e.parentElement.parentElement.getElementsByTagName("span")[0].textContent = Number(val1 * val2);
+      });
+    });
+  }
+
   calculateSummary(e) {
     let val1 = e.parentElement.parentElement.getElementsByTagName("input")[0].value;
     let val2 = e.parentElement.parentElement.getElementsByTagName("input")[1].value;
     e.parentElement.parentElement.getElementsByTagName("span")[0].textContent = Number(val1 * val2);
 
-    const orderTbody = e.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-    let orderTotal = 0;
-    Array.from(orderTbody.querySelectorAll('span[data-role="ordered-product-total"]')).forEach((e) => {
-      console.log(e.textContent);
-      orderTotal += Number(e.textContent);
-    });
-    console.log("order-total-" + e.getAttribute("data-order-id"));
-    document.querySelector("#order-total-" + e.getAttribute("data-order-id")).textContent = orderTotal;
+    // const orderTbody = e.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
+    // let orderTotal = 0;
+    // Array.from(orderTbody.querySelectorAll('span[data-role="ordered-product-total"]')).forEach((e) => {
+    //   console.log(e.textContent);
+    //   orderTotal += Number(e.textContent);
+    // });
+    // console.log("order-total-" + e.getAttribute("data-order-id"));
+    // document.querySelector("#order-total-" + e.getAttribute("data-order-id")).textContent = orderTotal;
   }
 
   updatePill() {
