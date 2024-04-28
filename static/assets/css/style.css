@@ -12,6 +12,10 @@ input[type="text"]:disabled {
   background-color: #fff;
 }
 
+input[type="number"]:disabled {
+  background-color: #fff;
+}
+
 #add-btn-div {
   position: fixed;
   bottom: 85px;

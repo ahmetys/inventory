@@ -22,7 +22,7 @@
       <!-----------------------------HEADER START------------------------------------->
       <div class="row py-3 bg-primary navbar sticky-top">
         <div class="col">
-          <h1 class="text-light d-flex justify-content-between">Inventory App<span class="h5" id="logged-in-user"></span></h1>
+          <h1 class="text-light d-flex justify-content-between">Inventory App<span class="h6" id="logged-in-user"></span></h1>
         </div>
       </div>
       <!-----------------------------HEADER END------------------------------------->
@@ -54,7 +54,7 @@
             </li>
             <li class="nav-item position-relative" role="presentation">
               <i class="nav-link fa-solid fa-2x fa-list text-primary" id="tab-orders-button" data-bs-toggle="pill" data-bs-target="#tab-orders" type="button" role="tab" aria-controls="tab-orders" aria-selected="false" data-role="load-tab-orders"></i>
-              <span class="position-absolute top-3 left-30 translate-middle badge rounded-pill bg-warning"> 1 </span>
+              <span class="position-absolute top-3 left-30 translate-middle badge rounded-pill bg-warning d-none"> 1 </span>
             </li>
             <li class="nav-item" role="presentation">
               <i class="nav-link fa-solid fa-2x fa-gear text-primary" id="tab-settings-button" data-bs-toggle="pill" data-bs-target="#tab-settings" type="button" role="tab" aria-controls="tab-settings" aria-selected="false" data-role="load-tab-settings"></i>
@@ -65,7 +65,7 @@
       <!-----------------------------FOOTER END------------------------------------->
 
       <!-----------------------------ADD BUTTON START------------------------------------->
-      <div class="dropup-center dropup">
+      <div id="add-button-div" class="dropup-center dropup d-none">
         <i class="fa-solid fa-4x fa-circle-plus text-success bg-light rounded-circle" id="add-btn-div" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
         <ul class="dropdown-menu">
           <li>

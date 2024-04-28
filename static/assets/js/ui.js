@@ -86,7 +86,7 @@ class UI {
             </div>
             <hr class="mb-1" />
             <div class="col-4 px-0">
-              <strong>Alis:</strong><span>${p.product_pprice}€</span>
+              <strong>Alis:</strong><span>${storage.getUserInfo().user_role == "admin" ? p.product_pprice : "-"}€</span>
             </div>
             <div class="col-4 px-0">
               <strong>T.Satis:</strong><span>${p.product_wprice}€</span>
@@ -163,7 +163,7 @@ class UI {
             </div>
             <hr class="mb-1" />
             <div class="col-4 px-0">
-              <strong>Alis:</strong><span>${p.product_pprice}€</span>
+              <strong>Alis:</strong><span>${storage.getUserInfo().user_role == "admin" ? p.product_pprice : "-"}€</span>
             </div>
             <div class="col-4 px-0">
               <strong>T.Satis:</strong><span>${p.product_wprice}€</span>
@@ -302,31 +302,32 @@ class UI {
                 <div>
                   <input data-order-id="${order.order_id}" data-product-id="${order.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-start" value="${
           order.ordered_product_quantity
-        }">
+        }" ${order.order_status == "completed" ? "disabled" : ""}>
                 </div>
                 x
                 <div>
                   <input data-order-id="${order.order_id}" data-product-id="${order.product_id}" onfocus="this.select();" onfocusout="ui.updateOrderRow(this)" onmouseup="return false;" type="number" class="inv-form-control-orders form-control d-inline-block mx-1 my-1 text-end" value="${
           order.ordered_product_wprice
-        }">€
+        }" ${order.order_status == "completed" ? "disabled" : ""}>€
                   = <span data-role="ordered-product-total"> ${order.ordered_product_wprice * order.ordered_product_quantity} </span>€
                 </div>
-                ${order.product_category_id == 0 ? deleteIcon : ""}
+                ${order.product_category_id == 0 && order.order_status != "completed" ? deleteIcon : ""}
               </div>
             </div>
           </td>
           `;
         orderTbody.appendChild(tr);
       }
-
-      const lastRow = document.createElement("tr");
-      lastRow.innerHTML = `
+      if (resOrderDetails[0].order_status == "ordered") {
+        const lastRow = document.createElement("tr");
+        lastRow.innerHTML = `
         <td>
           <i class="fa-solid fa-2x fa-circle-plus text-success" type="button" data-order-id="${orderId}" data-role="add-row-to-table"></i>
         </td>
         <td>
         </td>`;
-      orderTbody.appendChild(lastRow);
+        orderTbody.appendChild(lastRow);
+      }
     });
   }
 
@@ -349,29 +350,14 @@ class UI {
     });
   }
 
-  calculateSummary(e) {
-    let val1 = e.parentElement.parentElement.getElementsByTagName("input")[0].value;
-    let val2 = e.parentElement.parentElement.getElementsByTagName("input")[1].value;
-    e.parentElement.parentElement.getElementsByTagName("span")[0].textContent = Number(val1 * val2);
-
-    // const orderTbody = e.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement;
-    // let orderTotal = 0;
-    // Array.from(orderTbody.querySelectorAll('span[data-role="ordered-product-total"]')).forEach((e) => {
-    //   console.log(e.textContent);
-    //   orderTotal += Number(e.textContent);
-    // });
-    // console.log("order-total-" + e.getAttribute("data-order-id"));
-    // document.querySelector("#order-total-" + e.getAttribute("data-order-id")).textContent = orderTotal;
-  }
-
-  updatePill() {
-    // const cartPill = document.querySelector("#cart-pill");
-    // cartPill.classList += " d-none";
-    // cartPill.textContent = Number(storage.getCart().length);
-    // if (Number(storage.getCart().length) > 0) {
-    //   cartPill.classList.remove("d-none");
-    // }
-  }
+  // updatePill() {
+  //   // const cartPill = document.querySelector("#cart-pill");
+  //   // cartPill.classList += " d-none";
+  //   // cartPill.textContent = Number(storage.getCart().length);
+  //   // if (Number(storage.getCart().length) > 0) {
+  //   //   cartPill.classList.remove("d-none");
+  //   // }
+  // }
 
   showAlert(type, message) {
     const alertDiv = document.querySelector("#alert-div");

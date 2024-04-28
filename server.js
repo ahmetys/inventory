@@ -73,7 +73,7 @@ app.post("/auth", (req, res) => {
       if (results.length > 0) {
         req.session.loggedin = true;
         req.session.username = username;
-        res.send({ message: "Giris yapiliyor", type: "success", user_id: results[0].user_id, user_name: results[0].user_name });
+        res.send({ message: "Giris yapiliyor", type: "success", user_id: results[0].user_id, user_name: results[0].user_name, user_role: results[0].user_role });
       } else {
         res.send({ message: "Giris bilgileri hatali", type: "danger" });
       }
@@ -268,7 +268,7 @@ app.post("/getOrders", (req, res) => {
 });
 
 app.post("/getOrderDetails", (req, res) => {
-  const sql = `SELECT order_details.*,products.* FROM order_details,products WHERE order_details.order_id='${req.body.orderId}' AND order_details.ordered_product_id=products.product_id`;
+  const sql = `SELECT order_details.*,products.*,orders.order_status FROM order_details,products,orders WHERE order_details.order_id='${req.body.orderId}' AND order_details.ordered_product_id=products.product_id AND orders.order_id='${req.body.orderId}'`;
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log(result);
@@ -289,8 +289,12 @@ app.post("/updateOrderRow", (req, res) => {
   const sql = `UPDATE order_details SET ordered_product_name='${req.body.productName}', ordered_product_quantity='${req.body.productQuantity}', ordered_product_wprice='${req.body.productWprice}' WHERE order_id='${req.body.orderId}' AND ordered_product_id='${req.body.productId}'`;
   con.query(sql, function (err, result) {
     if (err) throw err;
-    console.log(result);
-    res.send(result);
+    const sql = `UPDATE products SET product_name='${req.body.productName}',  product_wprice='${req.body.productWprice}' WHERE product_id='${req.body.productId}'`;
+    con.query(sql, function (err, result) {
+      if (err) throw err;
+      console.log(result);
+      res.send(result);
+    });
   });
 });
 

@@ -18,14 +18,15 @@ loginButton.addEventListener("click", () => {
     })
       .then((res) => res.json())
       .then((auth) => {
+        console.log(auth);
         if (auth.type == "success") {
           let userInfo;
           if (localStorage.getItem("user-info") === null) {
-            userInfo = { user_id: auth.user_id, user_name: auth.user_name };
+            userInfo = { user_id: auth.user_id, user_name: auth.user_name, user_role: auth.user_role };
             localStorage.setItem("user-info", JSON.stringify(userInfo));
           } else {
             userInfo = JSON.parse(localStorage.getItem("user-info"));
-            userInfo = { user_id: auth.user_id, user_name: auth.user_name };
+            userInfo = { user_id: auth.user_id, user_name: auth.user_name, user_role: auth.user_role };
             localStorage.setItem("user-info", JSON.stringify(userInfo));
           }
           alert(auth.message, auth.type);

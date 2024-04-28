@@ -9,23 +9,39 @@ const updateProductModal = new bootstrap.Modal(document.querySelector("#update-p
 
 document.addEventListener("DOMContentLoaded", (e) => {
   ui.loadTabCollection();
-  ui.updatePill();
+  //  ui.updatePill();
   document.querySelector("#logged-in-user").textContent = storage.getUserInfo().user_name;
+
+  if (storage.getUserInfo().user_role == "admin") {
+    document.querySelector("#add-button-div").classList.remove("d-none");
+  }
 });
 
 document.addEventListener("click", (e) => {
   switch (e.target.getAttribute("data-role")) {
     case "load-tab-collection":
       ui.loadTabCollection();
+      if (storage.getUserInfo().user_role == "admin") {
+        document.querySelector("#add-button-div").classList.remove("d-none");
+      }
       break;
     case "load-tab-cart":
       ui.loadTabCart();
+      if (storage.getUserInfo().user_role == "admin") {
+        document.querySelector("#add-button-div").classList += " d-none";
+      }
       break;
     case "load-tab-orders":
       ui.loadTabOrders();
+      if (storage.getUserInfo().user_role == "admin") {
+        document.querySelector("#add-button-div").classList += " d-none";
+      }
       break;
     case "load-tab-settings":
       console.log("tab-settings");
+      if (storage.getUserInfo().user_role == "admin") {
+        document.querySelector("#add-button-div").classList += " d-none";
+      }
       break;
     case "add-product-to-cart":
       let quantity = e.target.parentElement.previousElementSibling.firstElementChild.nextElementSibling.value;
