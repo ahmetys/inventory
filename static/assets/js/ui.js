@@ -243,7 +243,7 @@ class UI {
                 <div class="dropdown">
                   <i class="fa-solid fa-3x fa-gear text-secondary bg-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false"></i>
                   <ul class="dropdown-menu">
-                      ${order.order_status == "ordered" ? completeOrderButton : ""}
+                      ${order.order_status == "ordered" && storage.getUserInfo().user_role == "admin" ? completeOrderButton : ""}
                   </ul>
                 </div>
               </div>
@@ -318,7 +318,7 @@ class UI {
           `;
         orderTbody.appendChild(tr);
       }
-      if (resOrderDetails[0].order_status == "ordered") {
+      if (resOrderDetails[0].order_status == "ordered" && storage.getUserInfo().user_role == "admin") {
         const lastRow = document.createElement("tr");
         lastRow.innerHTML = `
         <td>
